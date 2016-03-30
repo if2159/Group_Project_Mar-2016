@@ -15,15 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-//TODO Implement Login
-//TODO Implement login success to launch Account Screen
-//		also need to provide launch screen with account info.
-//		could pass all info or just the account number 
-//		if prior must load file in Main.
-//		if latter must search file for the info.
-//		third option is to move the account screen to inside of Main.java
-//		this would be easier but may be less correct
-//TODO Load accounts on start up
+
 @SuppressWarnings("serial")
 public class Main extends JFrame implements ActionListener{
 
@@ -38,6 +30,7 @@ public class Main extends JFrame implements ActionListener{
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Main frame = new Main();
@@ -96,11 +89,15 @@ public class Main extends JFrame implements ActionListener{
 		errorLbl.setBounds(50, 260, 440, 80);
 		contentPane.add(errorLbl);
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == loginBtn){
-			login();
+			if(login()){
+				System.out.println("Login Success");
+				AccountScreen AS = new AccountScreen(Integer.parseInt(accntNumField.getText()));
+				AS.setVisible(true);
+			}
 		}
 		
 	}

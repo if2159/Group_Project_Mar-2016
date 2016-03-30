@@ -1,6 +1,7 @@
 package ATM;
 
 import java.awt.EventQueue;
+import java.util.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,33 +11,21 @@ import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 @SuppressWarnings("serial")
 public class AccountScreen extends JFrame implements ActionListener{
 
 	private JPanel contentPane;
 	private JButton tranBtn, depositBtn, chngPassBtn, balanceBtn, withdrawBtn, exitBtn;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AccountScreen frame = new AccountScreen();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private final int AccountNumber;
 
 	/**
 	 * Create the frame.
 	 */
-	public AccountScreen() {
+	public AccountScreen(int accountNum) {
+		AccountNumber=accountNum;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 550, 400);
 		contentPane = new JPanel();
@@ -97,7 +86,18 @@ public class AccountScreen extends JFrame implements ActionListener{
 	
 	
 	public void startUp(){//Loads account info file. Should only load relevant account information
+		try{
+		Scanner file = new Scanner(new File("AccountInformation.txt"));
+		int accntNum = file.nextInt();
+		if(AccountNumber == accntNum){
+			
+		}
 		
+		file.close();
+		}
+		catch(FileNotFoundException e){
+			System.out.println("File Not Found: Account Information");
+		}
 		
 	}
 	
@@ -105,22 +105,22 @@ public class AccountScreen extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if(tranBtn== event.getSource()){
-
+			System.out.println("Button!");
 		}
 		if(exitBtn== event.getSource()){
-
+			System.out.println("Button!");
 		}
 		if(balanceBtn== event.getSource()){
-
+			System.out.println("Button!");
 		}
 		if(withdrawBtn== event.getSource()){
-
+			System.out.println("Button!");
 		}
 		if(chngPassBtn== event.getSource()){
-
+			System.out.println("Button!");
 		}
 		if(depositBtn== event.getSource()){
-
+			System.out.println("Button!");
 		}
 		
 	}
