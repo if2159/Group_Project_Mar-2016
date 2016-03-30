@@ -1,6 +1,5 @@
 package ATM;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -12,6 +11,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+@SuppressWarnings("serial")
 public class AccountScreen extends JFrame implements ActionListener{
 
 	private JPanel contentPane;
@@ -51,21 +51,21 @@ public class AccountScreen extends JFrame implements ActionListener{
 		depositBtn.setBounds(50, 30, 125, 75);
 		contentPane.add(depositBtn);
 		
-		 chngPassBtn = new JButton("<html><center>Change<br>Password</center></html>");
+		chngPassBtn = new JButton("<html><center>Change<br>Password</center></html>");
 		chngPassBtn.setToolTipText("Change Your Password");
 		chngPassBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		chngPassBtn.setEnabled(true);
 		chngPassBtn.setBounds(50, 230, 125, 75);
 		contentPane.add(chngPassBtn);
 		
-		 balanceBtn = new JButton("<html><center>Check<br>Balance</center></html>");
+		balanceBtn = new JButton("<html><center>Check<br>Balance</center></html>");
 		balanceBtn.setToolTipText("Check Balance of Account");
 		balanceBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		balanceBtn.setEnabled(true);
 		balanceBtn.setBounds(50, 130, 125, 75);
 		contentPane.add(balanceBtn);
 		
-		 withdrawBtn = new JButton("Withdraw");
+		withdrawBtn = new JButton("Withdraw");
 		withdrawBtn.setToolTipText("");
 		withdrawBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		withdrawBtn.setEnabled(true);
@@ -85,8 +85,23 @@ public class AccountScreen extends JFrame implements ActionListener{
 		exitBtn.setEnabled(true);
 		exitBtn.setBounds(300, 230, 125, 75);
 		contentPane.add(exitBtn);
+		
+		exitBtn.addActionListener(this);
+		depositBtn.addActionListener(this);
+		withdrawBtn.addActionListener(this);
+		balanceBtn.addActionListener(this);
+		chngPassBtn.addActionListener(this);
+		tranBtn.addActionListener(this);
+		
 	}
-
+	
+	
+	public void startUp(){//Loads account info file. Should only load relevant account information
+		
+		
+	}
+	
+	//TODO implement the methods for the buttons listed below
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if(tranBtn== event.getSource()){
