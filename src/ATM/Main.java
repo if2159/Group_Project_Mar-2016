@@ -1,26 +1,29 @@
 package ATM;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
-
 import java.awt.Font;
-
 import javax.swing.JTextField;
-
-import java.awt.FlowLayout;
-
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+//TODO Implement Login
+//TODO Implement login success to launch Account Screen
+//		also need to provide launch screen with account info.
+//		could pass all info or just the account number 
+//		if prior must load file in Main.
+//		if latter must search file for the info.
+//		third option is to move the account screen to inside of Main.java
+//		this would be easier but may be less correct
+//TODO Load accounts on start up
 @SuppressWarnings("serial")
 public class Main extends JFrame implements ActionListener{
 
@@ -29,7 +32,7 @@ public class Main extends JFrame implements ActionListener{
 	private JTextField passwordField;
 	private JButton loginBtn;
 	private JLabel errorLbl;
-	
+	private HashMap<Integer, String> accounts = new HashMap<Integer, String>();
 	/**
 	 * Launch the application.
 	 */
@@ -50,6 +53,8 @@ public class Main extends JFrame implements ActionListener{
 	 * Create the frame.
 	 */
 	public Main() {
+		startUp();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 550, 400);
 		contentPane = new JPanel();
@@ -81,6 +86,7 @@ public class Main extends JFrame implements ActionListener{
 		loginBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		loginBtn.setBounds(200, 206, 125, 50);
 		contentPane.add(loginBtn);
+		loginBtn.addActionListener(this);
 		
 		errorLbl = new JLabel("");
 		errorLbl.setForeground(Color.RED);
@@ -99,11 +105,67 @@ public class Main extends JFrame implements ActionListener{
 		
 	}
 	
-	
-	public void login(){
+	public void startUp(){
+		try{
+			Scanner sc = new Scanner(new File("./LoginInformation.txt"));
+			while(sc.hasNext()){
+				String input = sc.nextLine();
+				String in[]= input.split(" ");
+				if(in.length == 2){
+					int accntNum = Integer.parseInt(in[0]);
+					String password = in[1];
+					accounts.put(accntNum,password);
+				}
+				else{
+					System.out.println("Invalid whitespace likely password contains whitespace Char.\n\t"
+							+ input);
+				}
+			}
+			sc.close();
+		}
+		catch(IOException e){
+			System.out.println("File not Found: LoginInformation");
+		}
 		
 		
 	}
+	
+	public boolean login(){
+		/*
+		 * Check that password is correct for user.
+		 * if success:
+		 * 		return true
+		 * 		open Account Screen
+		 * If failure return false and write to errorLbl why.
+		 * Error Messages:
+		 * 		"Password and Account Number do not match"
+		 * 		"You must enter password"
+		 * 		"You must enter Account Number"
+		 * */
+		int accntNum;
+		try{
+			accntNum = Integer.parseInt(accntNumField.getText());
+		}
+		catch(NumberFormatException e){
+			errorLbl.setText("Account Number is Incorrect.");
+			return false;
+		}
+		if(accounts.containsKey(accntNum)){//Check if that account exists
+			if(accounts.get(accntNum).equals(passwordField.getText())){//checks if password matches account number
+				errorLbl.setText("");
+				return true;
+			}
+			else{
+				errorLbl.setText("Password and Account Number do not match.");
+				return false;
+			}
+		}
+		else{
+			errorLbl.setText("Account Number does not exist"); //Consider changing to do not match. Currently less secure.
+			return false;
+		}
+	}
+	
 	
 	
 	
