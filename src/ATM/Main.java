@@ -25,6 +25,7 @@ public class Main extends JFrame implements ActionListener{
 	private JButton loginBtn;
 	private JLabel errorLbl;
 	private HashMap<Integer, String> accounts = new HashMap<Integer, String>();
+	private static Main frame;
 	/**
 	 * Launch the application.
 	 */
@@ -33,7 +34,7 @@ public class Main extends JFrame implements ActionListener{
 			@Override
 			public void run() {
 				try {
-					Main frame = new Main();
+					frame = new Main();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -97,6 +98,7 @@ public class Main extends JFrame implements ActionListener{
 				System.out.println("Login Success");
 				AccountScreen AS = new AccountScreen(Integer.parseInt(accntNumField.getText()));
 				AS.setVisible(true);
+				frame.setVisible(false);
 			}
 		}
 		
@@ -116,6 +118,7 @@ public class Main extends JFrame implements ActionListener{
 				else{
 					System.out.println("Invalid whitespace likely password contains whitespace Char.\n\t"
 							+ input);
+					
 				}
 			}
 			sc.close();
@@ -158,7 +161,7 @@ public class Main extends JFrame implements ActionListener{
 			}
 		}
 		else{
-			errorLbl.setText("Account Number does not exist"); //Consider changing to do not match. Currently less secure.
+			errorLbl.setText("Account Number does not exist"); //Consider changing to do not match. This is more readable.
 			return false;
 		}
 	}

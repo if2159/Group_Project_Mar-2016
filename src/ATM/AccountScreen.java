@@ -1,6 +1,6 @@
 package ATM;
 
-import java.awt.EventQueue;
+
 import java.util.*;
 
 import javax.swing.JFrame;
@@ -19,13 +19,19 @@ public class AccountScreen extends JFrame implements ActionListener{
 
 	private JPanel contentPane;
 	private JButton tranBtn, depositBtn, chngPassBtn, balanceBtn, withdrawBtn, exitBtn;
-	private final int AccountNumber;
+	private final int     Account_Number;
+	private 	  String  First_Name;
+	private 	  String  Last_Name;
+	private 	  double  Balance;
+	private 	  boolean Active;
 
 	/**
 	 * Create the frame.
 	 */
 	public AccountScreen(int accountNum) {
-		AccountNumber=accountNum;
+		Account_Number=accountNum;
+		startUp();
+		this.setTitle("Welcome "+First_Name+" "+Last_Name);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 550, 400);
 		contentPane = new JPanel();
@@ -37,42 +43,42 @@ public class AccountScreen extends JFrame implements ActionListener{
 		depositBtn.setToolTipText("Deposit money into account");
 		depositBtn.setEnabled(true);
 		depositBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
-		depositBtn.setBounds(50, 30, 125, 75);
+		depositBtn.setBounds(10, 30, 125, 75);
 		contentPane.add(depositBtn);
 		
 		chngPassBtn = new JButton("<html><center>Change<br>Password</center></html>");
 		chngPassBtn.setToolTipText("Change Your Password");
 		chngPassBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		chngPassBtn.setEnabled(true);
-		chngPassBtn.setBounds(50, 230, 125, 75);
+		chngPassBtn.setBounds(10, 230, 125, 75);
 		contentPane.add(chngPassBtn);
 		
 		balanceBtn = new JButton("<html><center>Check<br>Balance</center></html>");
 		balanceBtn.setToolTipText("Check Balance of Account");
 		balanceBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		balanceBtn.setEnabled(true);
-		balanceBtn.setBounds(50, 130, 125, 75);
+		balanceBtn.setBounds(10, 130, 125, 75);
 		contentPane.add(balanceBtn);
 		
 		withdrawBtn = new JButton("Withdraw");
 		withdrawBtn.setToolTipText("");
 		withdrawBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		withdrawBtn.setEnabled(true);
-		withdrawBtn.setBounds(300, 30, 125, 75);
+		withdrawBtn.setBounds(399, 30, 125, 75);
 		contentPane.add(withdrawBtn);
 		
 		tranBtn = new JButton("<html><center>Make a<br>Transfer</center><html>");
 		tranBtn.setToolTipText("Transfer Money to Another Account");
 		tranBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		tranBtn.setEnabled(true);
-		tranBtn.setBounds(300, 130, 125, 75);
+		tranBtn.setBounds(399, 130, 125, 75);
 		contentPane.add(tranBtn);
 		
 		exitBtn = new JButton("Exit");
 		exitBtn.setToolTipText("Exit and Logout");
 		exitBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		exitBtn.setEnabled(true);
-		exitBtn.setBounds(300, 230, 125, 75);
+		exitBtn.setBounds(399, 219, 125, 75);
 		contentPane.add(exitBtn);
 		
 		exitBtn.addActionListener(this);
@@ -82,22 +88,65 @@ public class AccountScreen extends JFrame implements ActionListener{
 		chngPassBtn.addActionListener(this);
 		tranBtn.addActionListener(this);
 		
+
+		Debug();
 	}
 	
+	public void Debug(){
+		System.out.println("Account Number: "+Account_Number);
+		System.out.println("Last Name: "+Last_Name);
+		System.out.println("First Name: " + First_Name);
+		System.out.println("Balance: " + Balance);
+		System.out.println("Active: " + Active);
+	}
 	
 	public void startUp(){//Loads account info file. Should only load relevant account information
-		try{
-		Scanner file = new Scanner(new File("AccountInformation.txt"));
-		int accntNum = file.nextInt();
-		if(AccountNumber == accntNum){
-			
-		}
+
 		
-		file.close();
+		try{
+			Scanner file = new Scanner(new File("AccountInformation.txt"));
+			while(file.hasNext()){
+				int accntNum = file.nextInt();
+				System.out.println("accnt Num: "+accntNum);
+				if(Account_Number == accntNum){
+					file.nextLine();//Throws away the \n left by the nextInt()
+					System.out.println(0);
+					Last_Name = file.nextLine();
+					System.out.println(1);
+					First_Name = file.nextLine();
+					System.out.println(2);
+					Balance = file.nextDouble();
+					System.out.println(3);
+					if(file.nextLine().equals("Active")){
+						Active = true;
+					}
+					else{
+						Active = false;
+					}
+					break;
+								
+				}
+				else{//Skip wrong account
+					file.nextLine();
+					file.nextLine();
+					file.nextLine();
+					file.nextLine();
+					file.nextLine();
+				}
+				//System.out.println("BOOP");
+				
+				
+			}
+			file.close();
 		}
 		catch(FileNotFoundException e){
 			System.out.println("File Not Found: Account Information");
 		}
+		catch(InputMismatchException e){
+			e.printStackTrace();
+		}
+		
+		
 		
 	}
 	
