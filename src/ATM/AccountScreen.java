@@ -1,10 +1,22 @@
 package ATM;
-
+/* TODO Implement the following actions
+ * We will do it on the same frame.
+ * Use button.setVisible(boolean) to hide the buttons.
+ * Should always allow Exit button can be moved however.
+ * Withdraw
+ * Deposit 
+ * Change Password
+ * Check Balance
+ * Transfer
+ * Exit
+ */
 
 import java.util.*;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 
@@ -13,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+
 
 @SuppressWarnings("serial")
 public class AccountScreen extends JFrame implements ActionListener{
@@ -39,6 +52,13 @@ public class AccountScreen extends JFrame implements ActionListener{
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		drawHomeScreen();
+
+		Debug();
+	}
+	
+	public void drawHomeScreen(){
+
 		depositBtn = new JButton("Deposit");
 		depositBtn.setToolTipText("Deposit money into account");
 		depositBtn.setEnabled(true);
@@ -87,9 +107,6 @@ public class AccountScreen extends JFrame implements ActionListener{
 		balanceBtn.addActionListener(this);
 		chngPassBtn.addActionListener(this);
 		tranBtn.addActionListener(this);
-		
-
-		Debug();
 	}
 	
 	public void Debug(){
@@ -151,26 +168,88 @@ public class AccountScreen extends JFrame implements ActionListener{
 	}
 	
 	//TODO implement the methods for the buttons listed below
+	//Consider should we make each one of the buttons trigger an inner function or use seperate classes
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if(tranBtn== event.getSource()){
-			System.out.println("Button!");
+			transfer();
 		}
 		if(exitBtn== event.getSource()){
-			System.out.println("Button!");
+			exit();
 		}
 		if(balanceBtn== event.getSource()){
-			System.out.println("Button!");
+			checkBalance();
 		}
 		if(withdrawBtn== event.getSource()){
-			System.out.println("Button!");
+			withdraw();
 		}
 		if(chngPassBtn== event.getSource()){
-			System.out.println("Button!");
+			changePassword();
 		}
 		if(depositBtn== event.getSource()){
-			System.out.println("Button!");
+			deposit();
 		}
+		else if(withdrawButton == event.getSource() ){
+			
+		}
+		
+	}
+
+	private void deposit() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void changePassword() {
+		// TODO Auto-generated method stub
+		
+	}
+	private JButton withdrawButton;
+	private JTextField withdrawField;
+	private JButton returnBtn;
+	private void withdraw() {
+		withdrawBtn.setVisible(false);
+		tranBtn.setVisible(false);
+		balanceBtn.setVisible(false);
+		chngPassBtn.setVisible(false);
+		exitBtn.setVisible(false);
+		depositBtn.setVisible(false);
+		
+		JLabel lblNewLabel = new JLabel("Amount to Withdraw: $");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblNewLabel.setBounds(10, 160, 216, 20);
+		contentPane.add(lblNewLabel);
+		
+		withdrawField = new JTextField();
+		withdrawField.setBounds(225, 163, 165, 20);
+		contentPane.add(withdrawField);
+		withdrawField.setColumns(10);
+		
+		returnBtn = new JButton("\u2190 Return");
+		returnBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		returnBtn.setBounds(10, 11, 134, 23);
+		contentPane.add(returnBtn);
+		
+		withdrawButton = new JButton("<html><center>Withdraw<br>Amount</center></html>");
+		withdrawButton.addActionListener(this);
+		withdrawButton.setFont(new Font("Tahoma", Font.BOLD, 18));
+		withdrawButton.setBounds(403, 195, 121, 53);
+		contentPane.add(withdrawButton);
+		
+	}
+
+	private void checkBalance() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void exit() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void transfer() {
+		// TODO Auto-generated method stub
 		
 	}
 }
