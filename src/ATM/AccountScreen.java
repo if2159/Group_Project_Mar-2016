@@ -167,8 +167,8 @@ public class AccountScreen extends JFrame implements ActionListener{
 		
 	}
 	
-	//TODO implement the methods for the buttons listed below
-	//Consider should we make each one of the buttons trigger an inner function or use seperate classes
+	
+	//Consider should we make each one of the buttons trigger an inner function or use separate classes
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if(tranBtn== event.getSource()){
@@ -189,19 +189,22 @@ public class AccountScreen extends JFrame implements ActionListener{
 		if(depositBtn== event.getSource()){
 			deposit();
 		}
-		else if(withdrawButton == event.getSource() ){
+		if(withdrawButton == event.getSource() ){
 			
 		}
-		else if(returnBtn == event.getSource()){//TODO think of a better way to do this. Have to add any new buttons to set to false when you return
+		if(returnBtn == event.getSource()){//TODO think of a better way to do this. Have to add any new buttons to set to false when you return
 			withdrawButton.setVisible(false);
 			withdrawField.setVisible(false);
 			returnBtn.setVisible(false);
+			inbeddedLabel.setVisible(false);
+			
 			withdrawBtn.setVisible(true);
 			tranBtn.setVisible(true);
 			balanceBtn.setVisible(true);
 			chngPassBtn.setVisible(true);
 			exitBtn.setVisible(true);
 			depositBtn.setVisible(true);
+			System.out.println("Return");
 		}
 		
 	}
@@ -210,6 +213,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		
 	}
+	
 	/*
 	 * Passwords cannot contain spaces.
 	 * */
@@ -219,19 +223,28 @@ public class AccountScreen extends JFrame implements ActionListener{
 	}
 	private JButton withdrawButton, returnBtn;
 	private JTextField withdrawField;
+	private JLabel inbeddedLabel;
 
-	private void withdraw() {
+	private void clearScreen(){
 		withdrawBtn.setVisible(false);
 		tranBtn.setVisible(false);
 		balanceBtn.setVisible(false);
 		chngPassBtn.setVisible(false);
 		exitBtn.setVisible(false);
 		depositBtn.setVisible(false);
+	}
+	
+	/*
+	 * Check to make sure they can withdraw that amount. Compare to $Balance
+	 * Withdraw amount from balance. Open file and write change to file.
+	 */
+	private void withdraw() {
+		clearScreen();
 		
-		JLabel lblNewLabel = new JLabel("Amount to Withdraw: $");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabel.setBounds(10, 160, 216, 20);
-		contentPane.add(lblNewLabel);
+		inbeddedLabel = new JLabel("Amount to Withdraw: $");
+		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		inbeddedLabel.setBounds(10, 160, 216, 20);
+		contentPane.add(inbeddedLabel);
 		
 		withdrawField = new JTextField();
 		withdrawField.setBounds(225, 163, 165, 20);
@@ -242,17 +255,31 @@ public class AccountScreen extends JFrame implements ActionListener{
 		returnBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		returnBtn.setBounds(10, 11, 134, 23);
 		contentPane.add(returnBtn);
+		returnBtn.addActionListener(this);
 		
 		withdrawButton = new JButton("<html><center>Withdraw<br>Amount</center></html>");
 		withdrawButton.addActionListener(this);
 		withdrawButton.setFont(new Font("Tahoma", Font.BOLD, 18));
 		withdrawButton.setBounds(403, 195, 121, 53);
 		contentPane.add(withdrawButton);
+		withdrawButton.addActionListener(this);
 		
 	}
 
 	private void checkBalance() {
-		// TODO Auto-generated method stub
+		clearScreen();
+		returnBtn = new JButton("\u2190 Return");
+		returnBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		returnBtn.setBounds(10, 11, 134, 23);
+		contentPane.add(returnBtn);
+		returnBtn.addActionListener(this);
+		returnBtn.setVisible(true);
+		
+		inbeddedLabel = new JLabel("Your Balance is: $"+((Balance%.1!=0)?(Balance+"0"):(Balance)));
+		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		inbeddedLabel.setBounds(10, 160, 550, 20);
+		contentPane.add(inbeddedLabel);
+
 		
 	}
 
@@ -260,7 +287,9 @@ public class AccountScreen extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		
 	}
-
+	/*
+	 * Only transfer to existing accounts
+	 * */
 	private void transfer() {
 		// TODO Auto-generated method stub
 		
