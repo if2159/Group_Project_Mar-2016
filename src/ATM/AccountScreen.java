@@ -192,6 +192,17 @@ public class AccountScreen extends JFrame implements ActionListener{
 		else if(withdrawButton == event.getSource() ){
 			
 		}
+		else if(returnBtn == event.getSource()){//TODO think of a better way to do this. Have to add any new buttons to set to false when you return
+			withdrawButton.setVisible(false);
+			withdrawField.setVisible(false);
+			returnBtn.setVisible(false);
+			withdrawBtn.setVisible(true);
+			tranBtn.setVisible(true);
+			balanceBtn.setVisible(true);
+			chngPassBtn.setVisible(true);
+			exitBtn.setVisible(true);
+			depositBtn.setVisible(true);
+		}
 		
 	}
 
@@ -199,14 +210,16 @@ public class AccountScreen extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		
 	}
-
+	/*
+	 * Passwords cannot contain spaces.
+	 * */
 	private void changePassword() {
 		// TODO Auto-generated method stub
 		
 	}
-	private JButton withdrawButton;
+	private JButton withdrawButton, returnBtn;
 	private JTextField withdrawField;
-	private JButton returnBtn;
+
 	private void withdraw() {
 		withdrawBtn.setVisible(false);
 		tranBtn.setVisible(false);
