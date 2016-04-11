@@ -10,6 +10,9 @@ package ATM;
  * Transfer
  * Exit
  */
+//TODO Figure out how to deal with not active account.
+//Should they be able to reactivate? 
+//Most Buttons should be grayed out and disabled except maybe change pass and reactivate account.
 
 import java.util.*;
 
@@ -99,7 +102,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 		exitBtn.setToolTipText("Exit and Logout");
 		exitBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		exitBtn.setEnabled(true);
-		exitBtn.setBounds(399, 219, 125, 75);
+		exitBtn.setBounds(399, 230, 125, 75);
 		contentPane.add(exitBtn);
 		
 		exitBtn.addActionListener(this);
@@ -198,31 +201,33 @@ public class AccountScreen extends JFrame implements ActionListener{
 	}
 	
 	
-	//Consider should we make each one of the buttons trigger an inner function or use separate classes
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if(tranBtn== event.getSource()){
 			transfer();
 		}
-		if(exitBtn== event.getSource()){
+		else if(exitBtn== event.getSource()){
 			exit();
 		}
-		if(balanceBtn== event.getSource()){
+		else if(balanceBtn== event.getSource()){
 			checkBalance();
 		}
-		if(withdrawBtn== event.getSource()){
+		else if(withdrawBtn== event.getSource()){
 			withdraw();
-		}
-		if(chngPassBtn== event.getSource()){
-			changePassword();
-		}
-		if(depositBtn== event.getSource()){
-			deposit();
-		}
-		if(withdrawButton == event.getSource() ){
 			
 		}
-		if(returnBtn == event.getSource()){//TODO think of a better way to do this. Have to add any new buttons to set to false when you return
+		else if(chngPassBtn== event.getSource()){
+			changePassword();
+		}
+		else if(depositBtn== event.getSource()){
+			deposit();
+		}
+		else if(withdrawButton == event.getSource() ){
+			withdraw(Double.parseDouble(withdrawField.getText()));
+		}
+		else if(returnBtn == event.getSource()){//TODO think of a better way to do this. Have to add any new buttons to set to false when you return
 			if(withdrawButton!=null)withdrawButton.setVisible(false);
 			if(withdrawField!=null)withdrawField.setVisible(false);
 			if(returnBtn!=null)returnBtn.setVisible(false);
@@ -236,6 +241,24 @@ public class AccountScreen extends JFrame implements ActionListener{
 			depositBtn.setVisible(true);
 			System.out.println("Return");
 		}
+		
+	}
+
+	private void withdraw(double amnt) {
+		if(Balance - amnt >=0 ){
+			Balance -=amnt;
+			alert("Amount Succesfully Withdrawn");
+		}
+		else{
+			alert("Withdraw Failed: Insufficient Funds");
+		}
+		writeAccnt();
+	}
+
+	private void alert(String text) {
+		System.out.println("BOOP");
+		Alert a = new Alert(text);
+		a.setVisible(true);
 		
 	}
 
@@ -255,7 +278,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 	private JTextField withdrawField;
 	private JLabel inbeddedLabel;
 
-	private void clearScreen(){
+	private void clearScreen(){//Used to hide home screen buttons
 		withdrawBtn.setVisible(false);
 		tranBtn.setVisible(false);
 		balanceBtn.setVisible(false);
@@ -292,7 +315,6 @@ public class AccountScreen extends JFrame implements ActionListener{
 		withdrawButton.setFont(new Font("Tahoma", Font.BOLD, 18));
 		withdrawButton.setBounds(403, 195, 121, 53);
 		contentPane.add(withdrawButton);
-		withdrawButton.addActionListener(this);
 		
 	}
 
