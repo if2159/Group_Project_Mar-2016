@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 
 @SuppressWarnings("serial")
@@ -167,6 +168,35 @@ public class AccountScreen extends JFrame implements ActionListener{
 		
 	}
 	
+	private void writeAccnt(){//Writes all current Information to AccountInformation.txt *This does not include the password.
+		try {
+			
+			Scanner read =new Scanner(new File("AccountInformation.txt"));
+			String text="";
+			while(read.hasNext()){
+				long accntNum = read.nextInt();
+				read.nextLine();
+				if(accntNum == Account_Number){
+					text += accntNum + "\n"+Last_Name+"\n"+First_Name+"\n"+Balance+"\n"+((Active)?("Active"):("Not Active"))+"\n";
+					read.nextLine();
+					read.nextLine();
+					read.nextLine();
+					read.nextLine();
+				}
+				else{
+					text+=accntNum+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n";
+				}
+			}
+			read.close();
+			PrintWriter writer = new PrintWriter("AccountInformation.txt");
+			writer.write(text);
+			writer.close();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	//Consider should we make each one of the buttons trigger an inner function or use separate classes
 	@Override
@@ -193,10 +223,10 @@ public class AccountScreen extends JFrame implements ActionListener{
 			
 		}
 		if(returnBtn == event.getSource()){//TODO think of a better way to do this. Have to add any new buttons to set to false when you return
-			withdrawButton.setVisible(false);
-			withdrawField.setVisible(false);
-			returnBtn.setVisible(false);
-			inbeddedLabel.setVisible(false);
+			if(withdrawButton!=null)withdrawButton.setVisible(false);
+			if(withdrawField!=null)withdrawField.setVisible(false);
+			if(returnBtn!=null)returnBtn.setVisible(false);
+			if(inbeddedLabel!=null)inbeddedLabel.setVisible(false);
 			
 			withdrawBtn.setVisible(true);
 			tranBtn.setVisible(true);
@@ -279,7 +309,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
 		inbeddedLabel.setBounds(10, 160, 550, 20);
 		contentPane.add(inbeddedLabel);
-
+		writeAccnt();
 		
 	}
 
