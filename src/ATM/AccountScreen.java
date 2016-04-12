@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,7 +62,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 		Debug();
 	}
 	
-	public void drawHomeScreen(){
+	private void drawHomeScreen(){
 
 		depositBtn = new JButton("Deposit");
 		depositBtn.setToolTipText("Deposit money into account");
@@ -113,7 +114,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 		tranBtn.addActionListener(this);
 	}
 	
-	public void Debug(){
+	private void Debug(){
 		System.out.println("Account Number: "+Account_Number);
 		System.out.println("Last Name: "+Last_Name);
 		System.out.println("First Name: " + First_Name);
@@ -121,7 +122,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 		System.out.println("Active: " + Active);
 	}
 	
-	public void startUp(){//Loads account info file. Should only load relevant account information
+	private void startUp(){//Loads account info file. Should only load relevant account information
 
 		
 		try{
@@ -208,6 +209,9 @@ public class AccountScreen extends JFrame implements ActionListener{
 		if(tranBtn== event.getSource()){
 			transfer();
 		}
+		else if(transferButton == event.getSource()){
+			
+		}
 		else if(exitBtn== event.getSource()){
 			exit();
 		}
@@ -218,12 +222,6 @@ public class AccountScreen extends JFrame implements ActionListener{
 			withdraw();
 			
 		}
-		else if(chngPassBtn== event.getSource()){
-			changePassword();
-		}
-		else if(depositBtn== event.getSource()){
-			deposit();
-		}
 		else if(withdrawButton == event.getSource() ){
 			try{
 			withdraw(Double.parseDouble(withdrawField.getText()));
@@ -232,13 +230,34 @@ public class AccountScreen extends JFrame implements ActionListener{
 				alert("Please enter an ammount to withdraw field.");
 			}
 		}
-		else if(returnBtn == event.getSource()){//TODO think of a better way to do this. Have to add any new buttons to set to false when you return
-			if(withdrawButton!=null)withdrawButton.setVisible(false);
+		else if(chngPassBtn== event.getSource()){
+			changePassword();
+		}
+		else if(depositBtn== event.getSource()){
+			deposit();
+		}
+		else if(depositButton== event.getSource()){
+			try{
+				deposit(Double.parseDouble(depositField.getText()));
+				}
+				catch(NumberFormatException e){
+					alert("Please enter an ammount to deposit field.");
+				}
+		}
+		else if(returnBtn == event.getSource()){
+			/*if(withdrawButton!=null)withdrawButton.setVisible(false);
 			if(withdrawField!=null)withdrawField.setVisible(false);
 			if(returnBtn!=null)returnBtn.setVisible(false);
 			if(inbeddedLabel!=null)inbeddedLabel.setVisible(false);
 			if(depositButton!=null)depositButton.setVisible(false);
 			if(depositField != null)depositField.setVisible(false);
+			if(accntNumberField!=null)accntNumberField.setVisible(false);
+			if(amntField!=null)amntField.setVisible(false);
+			if(transferButton!=null)transferButton.setVisible(false);
+			if(inbeddedLabel2!=null)inbeddedLabel2.setVisible(false);*/
+			for(Component c:contentPane.getComponents()){
+				c.setVisible(false);
+			}
 			
 			withdrawBtn.setVisible(true);
 			tranBtn.setVisible(true);
@@ -271,7 +290,8 @@ public class AccountScreen extends JFrame implements ActionListener{
 	private JTextField depositField;
 	private JButton    depositButton;
 	private void deposit() {
-		inbeddedLabel = new JLabel("Amount to Withdraw: $");
+		clearScreen();
+		inbeddedLabel = new JLabel("Amount to Deposit: $");
 		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
 		inbeddedLabel.setBounds(10, 160, 216, 20);
 		contentPane.add(inbeddedLabel);
@@ -292,7 +312,12 @@ public class AccountScreen extends JFrame implements ActionListener{
 		depositButton.setFont(new Font("Tahoma", Font.BOLD, 18));
 		depositButton.setBounds(403, 195, 121, 53);
 		contentPane.add(depositButton);
+		repaint();
 		
+	}
+	private void deposit(Double amnt){
+		Balance +=amnt ;
+		alert("Amount Deposited. New Balance is $"+Balance+".");
 	}
 	
 	/*
@@ -372,8 +397,75 @@ public class AccountScreen extends JFrame implements ActionListener{
 	/*
 	 * Only transfer to existing accounts
 	 * */
+	private JTextField accntNumberField,amntField;
+	private JButton transferButton;
+	private JLabel inbeddedLabel2;
 	private void transfer() {
-		// TODO Auto-generated method stub
+		returnBtn = new JButton("\u2190 Return");
+		returnBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		returnBtn.setBounds(10, 11, 134, 23);
+		contentPane.add(returnBtn);
+		returnBtn.addActionListener(this);
+		
+		inbeddedLabel = new JLabel("Amount to Deposit: $");
+		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		inbeddedLabel.setBounds(10, 187, 216, 20);
+		contentPane.add(inbeddedLabel);
+		
+		inbeddedLabel2 = new JLabel("Transfer Fund to: ");
+		inbeddedLabel2.setFont(new Font("Tahoma", Font.BOLD, 18));
+		inbeddedLabel2.setBounds(10, 160, 216, 20);
+		contentPane.add(inbeddedLabel2);
+		
+		amntField = new JTextField();
+		amntField.setBounds(209, 187, 134, 20);
+		contentPane.add(amntField);
+		amntField.setColumns(10);
+		
+		accntNumberField = new JTextField();
+		accntNumberField.setColumns(10);
+		accntNumberField.setBounds(209, 160, 134, 20);
+		contentPane.add(accntNumberField);
+		
+		transferButton = new JButton("<html><center>Transfer</center></html>");
+		transferButton.addActionListener(this);
+		transferButton.setFont(new Font("Tahoma", Font.BOLD, 18));
+		transferButton.setBounds(386, 218, 121, 53);
+		contentPane.add(transferButton);
+		
+	}
+	
+	private void transfer(long accntNumber, double amnt){
+		if(Balance< amnt){
+			alert("Insuffcient Funds: Transfer Cancelled.");
+			return;
+		}
+		else if(checkExist(accntNumber)){
+			
+		}
+		else{
+			alert("Account does not exist. Please check Account Number and try again.");
+			return;
+		}
+	}
+	private boolean checkExist(long accntNumber){
+		try{
+			Scanner sc = new Scanner(new File("LoginInformation.txt"));
+			while(sc.hasNext()){
+				String input = sc.nextLine();
+				String []in=input.split(" ");
+				if(Long.parseLong(in[0]) == accntNumber){
+					sc.close();
+					return true;
+				}
+			}
+			sc.close();
+			return false;
+		}
+		catch(FileNotFoundException e){
+			e.printStackTrace();
+			return false;
+		}
 		
 	}
 }
