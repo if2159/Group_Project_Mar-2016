@@ -181,7 +181,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 				read.nextLine();
 				if(accntNum == Account_Number){
 					text += accntNum + "\n"+Last_Name+"\n"+First_Name+"\n"+Balance+"\n"+((Active)?("Active"):("Not Active"))+"\n";
-					read.nextLine();
+					read.nextLine();//Used to skip over lines of data that are replaced
 					read.nextLine();
 					read.nextLine();
 					read.nextLine();
@@ -237,6 +237,8 @@ public class AccountScreen extends JFrame implements ActionListener{
 			if(withdrawField!=null)withdrawField.setVisible(false);
 			if(returnBtn!=null)returnBtn.setVisible(false);
 			if(inbeddedLabel!=null)inbeddedLabel.setVisible(false);
+			if(depositButton!=null)depositButton.setVisible(false);
+			if(depositField != null)depositField.setVisible(false);
 			
 			withdrawBtn.setVisible(true);
 			tranBtn.setVisible(true);
@@ -266,23 +268,44 @@ public class AccountScreen extends JFrame implements ActionListener{
 		a.setVisible(true);
 		
 	}
-
+	private JTextField depositField;
+	private JButton    depositButton;
 	private void deposit() {
-		// TODO Auto-generated method stub
+		inbeddedLabel = new JLabel("Amount to Withdraw: $");
+		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		inbeddedLabel.setBounds(10, 160, 216, 20);
+		contentPane.add(inbeddedLabel);
+		
+		depositField = new JTextField();
+		depositField.setBounds(225, 163, 165, 20);
+		contentPane.add(depositField);
+		depositField.setColumns(10);
+		
+		returnBtn = new JButton("\u2190 Return");
+		returnBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		returnBtn.setBounds(10, 11, 134, 23);
+		contentPane.add(returnBtn);
+		returnBtn.addActionListener(this);
+		
+		depositButton = new JButton("<html><center>Deposit<br>Amount</center></html>");
+		depositButton.addActionListener(this);
+		depositButton.setFont(new Font("Tahoma", Font.BOLD, 18));
+		depositButton.setBounds(403, 195, 121, 53);
+		contentPane.add(depositButton);
 		
 	}
 	
 	/*
 	 * Passwords cannot contain spaces.
 	 * */
-	private void changePassword() {
+	private void changePassword() {//You can look at writeAccnt() and Main.login() to see how to do this.
 		// TODO Auto-generated method stub
 		
 	}
+	
 	private JButton withdrawButton, returnBtn;
 	private JTextField withdrawField;
 	private JLabel inbeddedLabel;
-
 	private void clearScreen(){//Used to hide home screen buttons
 		withdrawBtn.setVisible(false);
 		tranBtn.setVisible(false);
@@ -333,6 +356,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 		returnBtn.setVisible(true);
 		
 		inbeddedLabel = new JLabel("Your Balance is: $"+((Balance%.1!=0)?(Balance+"0"):(Balance)));
+		System.out.println(Balance%.1);
 		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
 		inbeddedLabel.setBounds(10, 160, 550, 20);
 		contentPane.add(inbeddedLabel);
@@ -341,9 +365,10 @@ public class AccountScreen extends JFrame implements ActionListener{
 	}
 
 	private void exit() {
-		// TODO Auto-generated method stub
-		
+		System.exit(0);
 	}
+	
+	
 	/*
 	 * Only transfer to existing accounts
 	 * */
