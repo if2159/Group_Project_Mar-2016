@@ -172,34 +172,6 @@ public class AccountScreen extends JFrame implements ActionListener{
 		
 	}
 	
-	private void writeAccnt(){//Writes all current Information to AccountInformation.txt *This does not include the password.
-		try {
-			
-			Scanner read =new Scanner(new File("AccountInformation.txt"));
-			String text="";
-			while(read.hasNext()){
-				long accntNum = read.nextInt();
-				read.nextLine();
-				if(accntNum == Account_Number){
-					text += accntNum + "\n"+Last_Name+"\n"+First_Name+"\n"+Balance+"\n"+((Active)?("Active"):("Not Active"))+"\n";
-					read.nextLine();//Used to skip over lines of data that are replaced
-					read.nextLine();
-					read.nextLine();
-					read.nextLine();
-				}
-				else{
-					text+=accntNum+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n";
-				}
-			}
-			read.close();
-			PrintWriter writer = new PrintWriter("AccountInformation.txt");
-			writer.write(text);
-			writer.close();
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	
 	
@@ -210,7 +182,12 @@ public class AccountScreen extends JFrame implements ActionListener{
 			transfer();
 		}
 		else if(transferButton == event.getSource()){
-			
+			try{
+			transfer(Long.parseLong(accntNumberField.getText()),Double.parseDouble(amntField.getText()));
+			}
+			catch(NumberFormatException e){
+				e.printStackTrace();
+			}
 		}
 		else if(exitBtn== event.getSource()){
 			exit();
@@ -401,6 +378,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 	private JButton transferButton;
 	private JLabel inbeddedLabel2;
 	private void transfer() {
+		clearScreen();
 		returnBtn = new JButton("\u2190 Return");
 		returnBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
 		returnBtn.setBounds(10, 11, 134, 23);
@@ -441,13 +419,71 @@ public class AccountScreen extends JFrame implements ActionListener{
 			return;
 		}
 		else if(checkExist(accntNumber)){
-			
+			Balance-=amnt;
+			try {
+				
+				Scanner read =new Scanner(new File("AccountInformation.txt"));
+				String text="";
+				while(read.hasNext()){
+					long accntNum = read.nextLong();
+					read.nextLine();
+					if(accntNum == accntNumber){
+						text += accntNum + "\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+(read.nextDouble()+amnt);
+						read.nextLine();
+						text+="\n"+read.nextLine()+"\n";
+					}
+					else{
+						text+=accntNum+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n";
+					}
+					System.out.println("***");
+				}
+				read.close();
+				PrintWriter writer = new PrintWriter("AccountInformation.txt");
+				writer.write(text);
+				writer.close();
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			writeAccnt();
+			alert("Transfer Successful");
 		}
 		else{
 			alert("Account does not exist. Please check Account Number and try again.");
 			return;
 		}
 	}
+	
+	private void writeAccnt(){//Writes all current Information to AccountInformation.txt *This does not include the password.
+		try {
+			
+			Scanner read =new Scanner(new File("AccountInformation.txt"));
+			String text="";
+			while(read.hasNext()){
+				long accntNum = read.nextLong();
+				read.nextLine();
+				if(accntNum == Account_Number){
+					text += accntNum + "\n"+Last_Name+"\n"+First_Name+"\n"+Balance+"\n"+((Active)?("Active"):("Not Active"))+"\n";
+					read.nextLine();//Used to skip over lines of data that are replaced
+					read.nextLine();
+					read.nextLine();
+					read.nextLine();
+				}
+				else{
+					text+=accntNum+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n";
+				}
+			}
+			read.close();
+			PrintWriter writer = new PrintWriter("AccountInformation.txt");
+			writer.write(text);
+			writer.close();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	private boolean checkExist(long accntNumber){
 		try{
 			Scanner sc = new Scanner(new File("LoginInformation.txt"));
