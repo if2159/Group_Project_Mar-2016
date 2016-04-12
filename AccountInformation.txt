@@ -11,10 +11,10 @@ Active
 111859622
 Reynolds
 Ryan
-125489
-Active
+125452.88
+Not Active
 8675309
 Smith
 Jenny
-7246.0
+7175.98
 Not Active

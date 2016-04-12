@@ -225,7 +225,12 @@ public class AccountScreen extends JFrame implements ActionListener{
 			deposit();
 		}
 		else if(withdrawButton == event.getSource() ){
+			try{
 			withdraw(Double.parseDouble(withdrawField.getText()));
+			}
+			catch(NumberFormatException e){
+				alert("Please enter an ammount to withdraw field.");
+			}
 		}
 		else if(returnBtn == event.getSource()){//TODO think of a better way to do this. Have to add any new buttons to set to false when you return
 			if(withdrawButton!=null)withdrawButton.setVisible(false);
