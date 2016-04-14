@@ -2,18 +2,17 @@ package ATM;
 /* TODO Implement the following actions
  * We will do it on the same frame.
  * Use button.setVisible(boolean) to hide the buttons.
- * Should always allow Exit button can be moved however.
- * Withdraw
- * Deposit 
  * Change Password
- * Check Balance
- * Transfer
- * Exit
  */
 //TODO Figure out how to deal with not active account.
 //Should they be able to reactivate? 
-//Most Buttons should be grayed out and disabled except maybe change pass and reactivate account.
+//Most Buttons should be grayed out and disabled except maybe change pass and reactivate account. JButton.setEnabled(bool)
+//Can they have money transferred to them?\
+//	If not need to rework transfer, can change checkExist(long) so that it checks if account is active.
+//		Would have to be redone to use AccountInformation.txt rather than LoginInformation.txt
 
+//Can they even log in
+//Should we create a "disable account" screen?
 import java.util.*;
 
 import javax.swing.JFrame;
@@ -42,7 +41,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 	private 	  String  Last_Name;
 	private 	  double  Balance;
 	private 	  boolean Active;
-
+	
 	/**
 	 * Create the frame.
 	 */
@@ -303,6 +302,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 	private void changePassword() {//You can look at writeAccnt() and Main.login() to see how to do this.
 		// TODO Auto-generated method stub
 		
+		
 	}
 	
 	private JButton withdrawButton, returnBtn;
@@ -484,7 +484,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 	}
 	
 	
-	private boolean checkExist(long accntNumber){
+	private boolean checkExist(long accntNumber){//Used to see if that account actually exists
 		try{
 			Scanner sc = new Scanner(new File("LoginInformation.txt"));
 			while(sc.hasNext()){
