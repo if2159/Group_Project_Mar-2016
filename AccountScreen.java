@@ -340,20 +340,11 @@ public class AccountScreen extends JFrame implements ActionListener{
 		}
 	private void changePassword(String newpassword){
 		try{
+			Scanner input=new Scanner(System.in);
 			
-			Scanner sc = new Scanner(new File("LoginInformation.txt"));
-			while(sc.hasNext()){
-				String input = sc.nextLine();
-				if(){
-					
-				}
-				else{
-					System.out.println("Invalid whitespace likely password contains whitespace Char.\n\t"
-							+ input);
-					
-				}
-			}
-			sc.close();
+			
+			
+		
 		}
 		catch(IOException e){
 			System.out.println("Unable to change password.\n");
