@@ -339,16 +339,17 @@ public class AccountScreen extends JFrame implements ActionListener{
 		
 		}
 	private void changePassword(String newpassword){
-		try{
-			Scanner input=new Scanner(System.in);
-			
-			
-			
-		
-		}
-		catch(IOException e){
-			System.out.println("Unable to change password.\n");
-		}
+	try	(FileWriter fw = new FileWriter("LoginInformation.txt", true);
+				    BufferedWriter bw = new BufferedWriter(fw);
+				    PrintWriter out = new PrintWriter(bw))
+				{
+				
+				   
+
+				} 
+		catch (IOException e) {
+				    alert("Unable to change password. \n");
+				}
 		
 		
 	}
