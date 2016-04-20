@@ -1,7 +1,7 @@
 111859620
 Islam1
 Md Tarikul
-2140.0
+2220.0
 Active
 111859621
 Luther
@@ -16,5 +16,5 @@ Not Active
 8675309
 Smith
 Jenny
-6940.0
-Not Active
+6700.0
+Active

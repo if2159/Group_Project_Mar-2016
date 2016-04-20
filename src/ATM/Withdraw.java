@@ -21,6 +21,7 @@ public class Withdraw extends JFrame implements ActionListener{
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
+	private JTextField textField_2;
 
 	/**
 	 * Launch the application.
@@ -49,37 +50,61 @@ public class Withdraw extends JFrame implements ActionListener{
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JButton returnBtn = new JButton("\u2190 Return");
-		returnBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
-		returnBtn.setBounds(10, 11, 134, 23);
-		contentPane.add(returnBtn);
-		returnBtn.addActionListener(this);
+		JButton depositBtn = new JButton("Deposit");
+		depositBtn.setToolTipText("Deposit money into account");
+		depositBtn.setEnabled(true);
+		depositBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		depositBtn.setBounds(10, 30, 125, 75);
+		contentPane.add(depositBtn);
 		
-		JLabel inbeddedLabel = new JLabel("Amount to Deposit: $");
-		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
-		inbeddedLabel.setBounds(10, 187, 216, 20);
-		contentPane.add(inbeddedLabel);
+		JButton chngPassBtn = new JButton("<html><center>Change<br>Password</center></html>");
+		chngPassBtn.setToolTipText("Change Your Password");
+		chngPassBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		chngPassBtn.setEnabled(true);
+		chngPassBtn.setBounds(10, 230, 125, 75);
+		contentPane.add(chngPassBtn);
 		
-		JLabel inbeddedLabel2 = new JLabel("Transfer Fund to: ");
-		inbeddedLabel2.setFont(new Font("Tahoma", Font.BOLD, 18));
-		inbeddedLabel2.setBounds(10, 160, 216, 20);
-		contentPane.add(inbeddedLabel2);
+		JButton balanceBtn = new JButton("<html><center>Check<br>Balance</center></html>");
+		balanceBtn.setToolTipText("Check Balance of Account");
+		balanceBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		balanceBtn.setEnabled(true);
+		balanceBtn.setBounds(10, 130, 125, 75);
+		contentPane.add(balanceBtn);
 		
-		textField = new JTextField();
-		textField.setBounds(209, 187, 134, 20);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		JButton withdrawBtn = new JButton("Withdraw");
+		withdrawBtn.setToolTipText("");
+		withdrawBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		withdrawBtn.setEnabled(true);
+		withdrawBtn.setBounds(399, 30, 125, 75);
+		contentPane.add(withdrawBtn);
 		
-		/*textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(209, 160, 134, 20);
-		contentPane.add(textField_1);
-		*/
-		JButton transferButton = new JButton("<html><center>Transfer</center></html>");
-		transferButton.addActionListener(this);
-		transferButton.setFont(new Font("Tahoma", Font.BOLD, 18));
-		transferButton.setBounds(386, 218, 121, 53);
-		contentPane.add(transferButton);
+		JButton tranBtn = new JButton("<html><center>Make a<br>Transfer</center><html>");
+		tranBtn.setToolTipText("Transfer Money to Another Account");
+		tranBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		tranBtn.setEnabled(true);
+		tranBtn.setBounds(399, 130, 125, 75);
+		contentPane.add(tranBtn);
+		
+		JButton exitBtn = new JButton("Exit");
+		exitBtn.setToolTipText("Exit and Logout");
+		exitBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		exitBtn.setEnabled(true);
+		exitBtn.setBounds(399, 230, 125, 75);
+		contentPane.add(exitBtn);
+		
+		JButton reactivateBtn = new JButton("<html><center>Reactivate<br>Account</center></html>");
+		reactivateBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		reactivateBtn.setBounds(204, 130, 125, 75);
+		contentPane.add(reactivateBtn);
+		
+		exitBtn.addActionListener(this);
+		depositBtn.addActionListener(this);
+		withdrawBtn.addActionListener(this);
+		balanceBtn.addActionListener(this);
+		chngPassBtn.addActionListener(this);
+		tranBtn.addActionListener(this);
+		reactivateBtn.addActionListener(this);
+		
 	}
 
 	@Override
