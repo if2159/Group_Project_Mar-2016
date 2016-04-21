@@ -1,9 +1,14 @@
-package ATM;
+package finalproject;
 /* TODO Implement the following actions
  * We will do it on the same frame.
  * Use button.setVisible(boolean) to hide the buttons.
- * Should always allow return button can be moved however.
+ * Should always allow Exit button can be moved however.
+ * Withdraw
+ * Deposit 
  * Change Password
+ * Check Balance
+ * Transfer
+ * Exit
  */
 //TODO Figure out how to deal with not active account.
 //Should they be able to reactivate? 
@@ -32,7 +37,7 @@ import java.io.PrintWriter;
 public class AccountScreen extends JFrame implements ActionListener{
 
 	private JPanel contentPane;
-	private JButton tranBtn, depositBtn, chngPassBtn, balanceBtn, withdrawBtn, exitBtn, reactivateBtn;
+	private JButton tranBtn, depositBtn, chngPassBtn, balanceBtn, withdrawBtn, exitBtn;
 	private final int     Account_Number;
 	private 	  String  First_Name;
 	private 	  String  Last_Name;
@@ -108,20 +113,6 @@ public class AccountScreen extends JFrame implements ActionListener{
 		balanceBtn.addActionListener(this);
 		chngPassBtn.addActionListener(this);
 		tranBtn.addActionListener(this);
-		
-		
-		if(!Active){
-			withdrawBtn.setEnabled(false);
-			tranBtn.setEnabled(false);
-			depositBtn.setEnabled(false);
-			balanceBtn.setEnabled(false);
-			
-			reactivateBtn = new JButton("<html><center>Reactivate<br>Account</center></html>");
-			reactivateBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
-			reactivateBtn.setBounds(204, 130, 125, 75);
-			contentPane.add(reactivateBtn);
-			reactivateBtn.addActionListener(this);
-		}
 	}
 	
 	private void Debug(){
@@ -132,26 +123,28 @@ public class AccountScreen extends JFrame implements ActionListener{
 		System.out.println("Active: " + Active);
 	}
 	
-	//Loads account info from file. Should only load relevant account information
-	private void startUp(){
+	private void startUp(){//Loads account info file. Should only load relevant account information
+
 		
 		try{
 			Scanner file = new Scanner(new File("AccountInformation.txt"));
 			while(file.hasNext()){
 				int accntNum = file.nextInt();
+				System.out.println("accnt Num: "+accntNum);
 				if(Account_Number == accntNum){
 					file.nextLine();//Throws away the \n left by the nextInt()
+					System.out.println(0);
 					Last_Name = file.nextLine();
+					System.out.println(1);
 					First_Name = file.nextLine();
+					System.out.println(2);
 					Balance = file.nextDouble();
-					file.nextLine();//Throw away new Line
-					String act = file.nextLine().trim();
-					if(act.equals("Active")){
+					System.out.println(3);
+					if(file.nextLine().equals("Active")){
 						Active = true;
 					}
 					else{
 						Active = false;
-						
 					}
 					break;
 								
@@ -162,14 +155,15 @@ public class AccountScreen extends JFrame implements ActionListener{
 					file.nextLine();
 					file.nextLine();
 					file.nextLine();
-				}				
+				}
+				//System.out.println("BOOP");
+				
 				
 			}
 			file.close();
 		}
 		catch(FileNotFoundException e){
 			System.out.println("File Not Found: Account Information");
-			e.printStackTrace();
 		}
 		catch(InputMismatchException e){
 			e.printStackTrace();
@@ -193,7 +187,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 			transfer(Long.parseLong(accntNumberField.getText()),Double.parseDouble(amntField.getText()));
 			}
 			catch(NumberFormatException e){
-				alert("Invalid Input.");
+				e.printStackTrace();
 			}
 		}
 		else if(exitBtn== event.getSource()){
@@ -217,21 +211,12 @@ public class AccountScreen extends JFrame implements ActionListener{
 		else if(chngPassBtn== event.getSource()){
 			changePassword();
 		}
-		else if(changePasswordButton == event.getSource()){
-			if(passwordField.getText().equals(confirmPasswordField.getText())){
-				String newPass=passwordField.getText();
-				if(newPass.length()>0){
-					changePassword(newPass);
-				
-				}
-				else{
-					alert("No password entered.");
-				}
-			}
-			else{
-				alert("Passwords do not match.");
-			}
+		else if(chngPassBtn == event.getSource()){
+			changePassword(newpass.getText());
+			
 		}
+		
+		
 		else if(depositBtn== event.getSource()){
 			deposit();
 		}
@@ -243,10 +228,17 @@ public class AccountScreen extends JFrame implements ActionListener{
 					alert("Please enter an ammount to deposit field.");
 				}
 		}
-		else if(reactivateBtn == event.getSource()){
-			activate();
-		}
 		else if(returnBtn == event.getSource()){
+			/*if(withdrawButton!=null)withdrawButton.setVisible(false);
+			if(withdrawField!=null)withdrawField.setVisible(false);
+			if(returnBtn!=null)returnBtn.setVisible(false);
+			if(inbeddedLabel!=null)inbeddedLabel.setVisible(false);
+			if(depositButton!=null)depositButton.setVisible(false);
+			if(depositField != null)depositField.setVisible(false);
+			if(accntNumberField!=null)accntNumberField.setVisible(false);
+			if(amntField!=null)amntField.setVisible(false);
+			if(transferButton!=null)transferButton.setVisible(false);
+			if(inbeddedLabel2!=null)inbeddedLabel2.setVisible(false);*/
 			for(Component c:contentPane.getComponents()){
 				c.setVisible(false);
 			}
@@ -257,20 +249,11 @@ public class AccountScreen extends JFrame implements ActionListener{
 			chngPassBtn.setVisible(true);
 			exitBtn.setVisible(true);
 			depositBtn.setVisible(true);
-			Debug();
+			System.out.println("Return");
 		}
 		
 	}
-	private void activate(){
-		Active = true;
-		writeAccnt();
-		withdrawBtn.setEnabled(true);
-		tranBtn.setEnabled(true);
-		depositBtn.setEnabled(true);
-		balanceBtn.setEnabled(true);
-		reactivateBtn.setVisible(false);
-		alert("Account Reactivated");
-	}
+
 	private void withdraw(double amnt) {
 		if(Balance - amnt >=0 ){
 			Balance -=amnt;
@@ -283,6 +266,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 	}
 
 	private void alert(String text) {
+		System.out.println("BOOP");
 		Alert a = new Alert(text);
 		a.setVisible(true);
 		
@@ -318,90 +302,68 @@ public class AccountScreen extends JFrame implements ActionListener{
 	private void deposit(Double amnt){
 		Balance +=amnt ;
 		alert("Amount Deposited. New Balance is $"+Balance+".");
-		writeAccnt();
 	}
 	
 	/*
 	 * Passwords cannot contain spaces.
 	 * */
-	private JTextField passwordField,confirmPasswordField;
-	private JButton changePasswordButton;
+	private JLabel chngpassLabel;
+	private JTextField newpass;
+	private JButton chngpassButton;
 	
 	private void changePassword() {//You can look at writeAccnt() and Main.login() to see how to do this.
+		// TODO Auto-generated method stub
 		clearScreen();
+		
+		chngpassLabel=new JLabel("Enter the new password: ");
+		chngpassLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		chngpassLabel.setBounds(10, 160, 216, 20);	//??Haven't tested the bounds yet
+		contentPane.add(chngpassLabel);
+		
+		newpass=new JTextField();
+		newpass.setBounds(225, 163, 165, 20);	//??Haven't tested the bounds yet
+		contentPane.add(newpass);
+		newpass.setColumns(10);
 		
 		returnBtn = new JButton("\u2190 Return");
 		returnBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
-		returnBtn.setBounds(10, 11, 134, 23);
+		returnBtn.setBounds(10, 11, 134, 23);	//??Haven't tested the bounds yet
 		contentPane.add(returnBtn);
 		returnBtn.addActionListener(this);
 		
-		inbeddedLabel = new JLabel("Enter Password Again:");
-		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
-		inbeddedLabel.setBounds(10, 187, 216, 20);
-		contentPane.add(inbeddedLabel);
+		chngpassButton=new JButton("Change the password");
+		chngpassButton.addActionListener(this);
+		chngpassButton.setFont(new Font("Tahoma", Font.BOLD, 18));
+		chngpassButton.setBounds(403, 195, 121, 53);	//??Haven't tested the bounds yet
+		contentPane.add(chngpassButton);
 		
-		inbeddedLabel2 = new JLabel("Enter New Password:");
-		inbeddedLabel2.setFont(new Font("Tahoma", Font.BOLD, 18));
-		inbeddedLabel2.setBounds(10, 160, 216, 20);
-		contentPane.add(inbeddedLabel2);
-		
-		confirmPasswordField = new JTextField();
-		confirmPasswordField.setBounds(219, 190, 134, 20);
-		contentPane.add(confirmPasswordField);
-		confirmPasswordField.setColumns(10);
-		
-		changePasswordButton = new JButton("<html><center>Confirm<br>Change</center></html>");
-		changePasswordButton.addActionListener(this);
-		changePasswordButton.setFont(new Font("Tahoma", Font.BOLD, 18));
-		changePasswordButton.setBounds(386, 218, 121, 53);
-		contentPane.add(changePasswordButton);
-		
-		passwordField = new JTextField();
-		passwordField.setColumns(10);
-		passwordField.setBounds(219, 163, 134, 20);
-		contentPane.add(passwordField);
-		
-		
-	}
-	private void changePassword(String newPass){
-		if(newPass.split(" ").length==1){
-			try{
-				Scanner read = new Scanner(new File("LoginInformation.txt"));
-				String output="";
-				while(read.hasNext()){
-					String in = read.nextLine();
-					if(Long.parseLong(in.split(" ")[0])==Account_Number){
-						output+=Account_Number+" "+newPass+"\n";
-					}
-					else{
-						output+=in+"\n";
-					}
-				}
-				read.close();
-				PrintWriter write = new PrintWriter(new File("LoginInformation.txt"));
-				write.write(output);
-				write.close();
-				alert("Password has been updated.");
+		}
+	private void changePassword(String newpassword){
+	try	(FileWriter fw = new FileWriter("LoginInformation.txt", true);
+				    BufferedWriter bw = new BufferedWriter(fw);
+				    PrintWriter out = new PrintWriter(bw))
+				{
 				
-			}
-			catch(IOException e){
-				System.out.println("File Not Found: LoginInformation.txt");
-				e.printStackTrace();
-			}
-		}
-		else{
-			alert("Password not changed: Cannot contain spaces");
-		}
+				   
+
+				} 
+		catch (IOException e) {
+				    alert("Unable to change password. \n");
+				}
+		
+		
 	}
 	
 	private JButton withdrawButton, returnBtn;
 	private JTextField withdrawField;
 	private JLabel inbeddedLabel;
 	private void clearScreen(){//Used to hide home screen buttons
-		for(Component c:contentPane.getComponents()){
-			c.setVisible(false);
-		}
+		withdrawBtn.setVisible(false);
+		tranBtn.setVisible(false);
+		balanceBtn.setVisible(false);
+		chngPassBtn.setVisible(false);
+		exitBtn.setVisible(false);
+		depositBtn.setVisible(false);
 	}
 	
 	/*
@@ -443,7 +405,9 @@ public class AccountScreen extends JFrame implements ActionListener{
 		contentPane.add(returnBtn);
 		returnBtn.addActionListener(this);
 		returnBtn.setVisible(true);
-		inbeddedLabel = new JLabel("Your Balance is: $"+((String.format("%.2f",Balance))));
+		
+		inbeddedLabel = new JLabel("Your Balance is: $"+((Balance%.1!=0)?(Balance+"0"):(Balance)));
+		System.out.println(Balance%.1);
 		inbeddedLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
 		inbeddedLabel.setBounds(10, 160, 550, 20);
 		contentPane.add(inbeddedLabel);
@@ -503,9 +467,6 @@ public class AccountScreen extends JFrame implements ActionListener{
 			alert("Insuffcient Funds: Transfer Cancelled.");
 			return;
 		}
-		else if(accntNumber== Account_Number){
-			alert("Transfer Failed: Cannot Transfer to own Account");
-		}
 		else if(checkExist(accntNumber)){
 			Balance-=amnt;
 			try {
@@ -523,6 +484,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 					else{
 						text+=accntNum+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n";
 					}
+					System.out.println("***");
 				}
 				read.close();
 				PrintWriter writer = new PrintWriter("AccountInformation.txt");

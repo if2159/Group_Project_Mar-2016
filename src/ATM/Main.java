@@ -95,7 +95,6 @@ public class Main extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == loginBtn){
 			if(login()){
-				System.out.println("Login Success");
 				AccountScreen AS = new AccountScreen(Integer.parseInt(accntNumField.getText()));
 				AS.setVisible(true);
 				frame.setVisible(false);
