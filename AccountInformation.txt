@@ -1,11 +1,7 @@
 111859620
-Islam1
+Islam
 Md Tarikul
-<<<<<<< HEAD
-2708.0
-=======
-2220.0
->>>>>>> origin/master
+2908.00005
 Active
 111859621
 Luther
@@ -20,10 +16,5 @@ Not Active
 8675309
 Smith
 Jenny
-<<<<<<< HEAD
-26115.44
-Not Active
-=======
-6700.0
+25965.439952441408
 Active
->>>>>>> origin/master

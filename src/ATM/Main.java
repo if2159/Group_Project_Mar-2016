@@ -94,7 +94,7 @@ public class Main extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == loginBtn){
-			if(login()){
+			if(login()){//Creates new windows for the user to access account.
 				AccountScreen AS = new AccountScreen(Integer.parseInt(accntNumField.getText()));
 				AS.setVisible(true);
 				frame.setVisible(false);
@@ -102,7 +102,10 @@ public class Main extends JFrame implements ActionListener{
 		}
 		
 	}
-	
+	/*
+	 * Reads in all accounts and passwords
+	 * Adds them to HashMap accounts to use for logging in.
+	 * */
 	public void startUp(){
 		try{
 			Scanner sc = new Scanner(new File("./LoginInformation.txt"));
