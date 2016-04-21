@@ -2,13 +2,8 @@ package ATM;
 /* TODO Implement the following actions
  * We will do it on the same frame.
  * Use button.setVisible(boolean) to hide the buttons.
- * Should always allow Exit button can be moved however.
- * Withdraw
- * Deposit 
+ * Should always allow return button can be moved however.
  * Change Password
- * Check Balance
- * Transfer
- * Exit
  */
 //TODO Figure out how to deal with not active account.
 //Should they be able to reactivate? 
