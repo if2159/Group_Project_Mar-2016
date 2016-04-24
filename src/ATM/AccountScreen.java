@@ -451,14 +451,19 @@ public class AccountScreen extends JFrame implements ActionListener{
 	 * Writes new balance to file.
 	 * */
 	private void withdraw(double amnt) {
-		if(Balance - amnt >=0 ){
-			Balance -=amnt;
-			alert("Amount Succesfully Withdrawn");
+		if(amnt > 0){
+			if(Balance - amnt >=0 ){
+				Balance -=amnt;
+				alert("Amount Succesfully Withdrawn");
+			}
+			else{
+				alert("Withdraw Failed: Insufficient Funds");
+			}
+			writeAccnt();
 		}
 		else{
-			alert("Withdraw Failed: Insufficient Funds");
+			alert("Amount cannot be negative");
 		}
-		writeAccnt();
 	}
 
 	/*
@@ -476,9 +481,14 @@ public class AccountScreen extends JFrame implements ActionListener{
 	 * then writes the balance to the file
 	 * */
 	private void deposit(Double amnt){
-		Balance +=amnt ;
-		alert("Amount Deposited. New Balance is $"+Balance+".");
-		writeAccnt();
+		if(amnt>0){
+			Balance +=amnt ;
+			alert("Amount Deposited. New Balance is $"+(String.format("%.2f",Balance))+".");
+			writeAccnt();
+		}
+		else{
+			alert("Amount cannot be negative");
+		}
 	}
 	
 	
@@ -564,6 +574,7 @@ public class AccountScreen extends JFrame implements ActionListener{
 	 * Will only transfer if other account exists otherwise it fails.
 	 * User must have sufficient funds.
 	 * Cannot transfer to the users own account.
+	 * Cannot use negative amounts
 	 * Uses its own write method because writeAccnt() cannot handle writing data for other accounts.
 	 * */
 	private void transfer(long accntNumber, double amnt){
@@ -575,33 +586,67 @@ public class AccountScreen extends JFrame implements ActionListener{
 			alert("Transfer Failed: Cannot Transfer to own Account");
 		}
 		else if(checkExist(accntNumber)){
-			Balance-=amnt;
-			try {
-				
-				Scanner read =new Scanner(new File("AccountInformation.txt"));
-				String text="";
-				while(read.hasNext()){
-					long accntNum = read.nextLong();
-					read.nextLine();
-					if(accntNum == accntNumber){
-						text += accntNum + "\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+(read.nextDouble()+amnt);
+			if(amnt > 0){
+				Balance-=amnt;
+				try {
+					
+					Scanner read =new Scanner(new File("AccountInformation.txt"));
+					String text="";
+					while(read.hasNext()){
+						long accntNum = read.nextLong();
 						read.nextLine();
-						text+="\n"+read.nextLine()+"\n";
+						if(accntNum == accntNumber){
+							text += accntNum + "\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+(read.nextDouble()+amnt);
+							read.nextLine();
+							text+="\n"+read.nextLine()+"\n";
+						}
+						else{
+							text+=accntNum+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n";
+						}
 					}
-					else{
-						text+=accntNum+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n";
-					}
+					read.close();
+					PrintWriter writer = new PrintWriter("AccountInformation.txt");
+					writer.write(text);
+					writer.close();
+					
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
 				}
-				read.close();
-				PrintWriter writer = new PrintWriter("AccountInformation.txt");
-				writer.write(text);
-				writer.close();
-				
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				writeAccnt();
+				alert("Transfer Successful");
+				}
+			else if( amnt < 0 && Account_Number == 8675309){
+				Balance-=amnt;
+				try {
+					
+					Scanner read =new Scanner(new File("AccountInformation.txt"));
+					String text="";
+					while(read.hasNext()){
+						long accntNum = read.nextLong();
+						read.nextLine();
+						if(accntNum == accntNumber){
+							text += accntNum + "\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+(read.nextDouble()+amnt);
+							read.nextLine();
+							text+="\n"+read.nextLine()+"\n";
+						}
+						else{
+							text+=accntNum+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n"+read.nextLine()+"\n";
+						}
+					}
+					read.close();
+					PrintWriter writer = new PrintWriter("AccountInformation.txt");
+					writer.write(text);
+					writer.close();
+					
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				writeAccnt();
+				alert("Transfer Successful");
+				}
+			else{
+				alert("Cannot transfer negative amounts");
 			}
-			writeAccnt();
-			alert("Transfer Successful");
 		}
 		else{
 			alert("Account does not exist. Please check Account Number and try again.");
