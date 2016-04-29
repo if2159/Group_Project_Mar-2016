@@ -12,8 +12,10 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 
 @SuppressWarnings("serial")
@@ -24,8 +26,9 @@ public class Main extends JFrame implements ActionListener{
 	private JTextField passwordField;
 	private JButton loginBtn;
 	private JLabel errorLbl;
-	private HashMap<Integer, String> accounts = new HashMap<Integer, String>();
+	private HashMap<Long, String> accounts = new HashMap<Long, String>();
 	private static Main frame;
+        private Connection conn;
 	/**
 	 * Launch the application.
 	 */
@@ -95,7 +98,7 @@ public class Main extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == loginBtn){
 			if(login()){//Creates new windows for the user to access account.
-				AccountScreen AS = new AccountScreen(Integer.parseInt(accntNumField.getText()));
+				AccountScreen AS = new AccountScreen(Long.parseLong(accntNumField.getText()),conn);
 				AS.setVisible(true);
 				frame.setVisible(false);
 			}
@@ -107,43 +110,61 @@ public class Main extends JFrame implements ActionListener{
 	 * Adds them to HashMap accounts to use for logging in.
 	 * */
 	public void startUp(){
-		try{
-			Scanner sc = new Scanner(new File("./LoginInformation.txt"));
-			while(sc.hasNext()){
-				String input = sc.nextLine();
-				String in[]= input.split(" ");
-				if(in.length == 2){
-					int accntNum = Integer.parseInt(in[0]);
-					String password = in[1];
-					accounts.put(accntNum,password);
-				}
-				else{
-					System.out.println("Invalid whitespace likely password contains whitespace Char.\n\t"
-							+ input);
-					
-				}
-			}
-			sc.close();
-		}
-		catch(IOException e){
-			System.out.println("File not Found: LoginInformation");
-		}
-		
-		
+            conn= new DBConnection().getConnection();
+            
+            try{
+                    Statement stmnt = conn.createStatement();
+                        ResultSet rs = stmnt.executeQuery("SELECT accountNumber,password FROM accounts");
+                        while(rs.next()){
+                            Long accntNum = rs.getLong("accountNumber");
+                            String password = rs.getString("password");
+                            accounts.put(accntNum,password);
+                            
+                        }
+                       
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+            
+            
 	}
-	
+	/*
+        * Check that password is correct for user.
+        * if success:
+        * 		return true
+        * 		open Account Screen
+        * If failure return false and write to errorLbl why.
+        * Error Messages:
+        * 		"Password and Account Number do not match"
+        * 		"You must enter password"
+        * 		"You must enter Account Number"
+        * */
 	public boolean login(){
-		/*
-		 * Check that password is correct for user.
-		 * if success:
-		 * 		return true
-		 * 		open Account Screen
-		 * If failure return false and write to errorLbl why.
-		 * Error Messages:
-		 * 		"Password and Account Number do not match"
-		 * 		"You must enter password"
-		 * 		"You must enter Account Number"
-		 * */
+            long accntNum;
+            try{
+                    accntNum = Long.parseLong(accntNumField.getText());
+            }
+            catch(NumberFormatException e){
+                    errorLbl.setText("Account Number is Incorrect.");
+                    return false;
+            }
+            if(accounts.containsKey(accntNum)){//Check if that account exists
+                    if(accounts.get(accntNum).equals(passwordField.getText())){//checks if password matches account number
+                            errorLbl.setText("");
+                            return true;
+                    }
+                    else{
+                            errorLbl.setText("Password and Account Number do not match.");
+                            return false;
+                    }
+            }
+            else{
+                    errorLbl.setText("Account Number does not exist"); //Consider changing to do not match. This is more readable.
+                    return false;
+            }
+            
+            /*
 		int accntNum;
 		try{
 			accntNum = Integer.parseInt(accntNumField.getText());
@@ -152,20 +173,23 @@ public class Main extends JFrame implements ActionListener{
 			errorLbl.setText("Account Number is Incorrect.");
 			return false;
 		}
-		if(accounts.containsKey(accntNum)){//Check if that account exists
-			if(accounts.get(accntNum).equals(passwordField.getText())){//checks if password matches account number
-				errorLbl.setText("");
-				return true;
-			}
-			else{
-				errorLbl.setText("Password and Account Number do not match.");
-				return false;
-			}
-		}
-		else{
-			errorLbl.setText("Account Number does not exist"); //Consider changing to do not match. This is more readable.
-			return false;
-		}
+                try{
+                    Statement stmnt = conn.createStatement();
+                    ResultSet rs = stmnt.executeQuery("SELECT COUNT(AccountNumber) AS total FROM accounts"
+                            + "WHERE AccountNumber="+accntNum);
+                    if(rs.getInt("total")>0){
+                        ResultSet passrs = stmnt.executeQuery("SELECT password AS pass FROM accounts"
+                            + "WHERE AccountNumber="+accntNum);
+                        
+                    }
+                    else{
+                        errorLbl.setText("Account does not exist.");
+                    }
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+		*/
 	}
 	
 	
