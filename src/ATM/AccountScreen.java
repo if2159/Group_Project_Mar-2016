@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class AccountScreen extends JFrame implements ActionListener {
@@ -123,12 +124,12 @@ public class AccountScreen extends JFrame implements ActionListener {
             reactivateBtn.addActionListener(this);
         }
         else if(Active){
-            viewTransactions = new JButton("<html><center>View<br>Transactions</center></html>");
+            viewTransactions =new JButton("<html><center>View<br>Transactions</center></html>");
+            viewTransactions.setHorizontalAlignment(SwingConstants.CENTER);
             viewTransactions.setFont(new Font("Tahoma", Font.BOLD, 18));
-            viewTransactions.setBounds(204, 130, 125, 75);
+            viewTransactions.setBounds(188, 130, 150, 75);
             contentPane.add(viewTransactions);
             viewTransactions.addActionListener(this);
-            System.out.println("PANTS");
         }
     }
 
@@ -219,6 +220,8 @@ public class AccountScreen extends JFrame implements ActionListener {
             }
         } else if (reactivateBtn == event.getSource()) {
             activate();
+            drawHomeScreen();
+            repaint();
         } 
         else if(viewTransactions == event.getSource()){
             System.out.println("poob");
@@ -229,15 +232,9 @@ public class AccountScreen extends JFrame implements ActionListener {
         else if (returnBtn == event.getSource()) {
             clearScreen();
 
-            withdrawBtn.setVisible(true);
-            tranBtn.setVisible(true);
-            balanceBtn.setVisible(true);
-            chngPassBtn.setVisible(true);
-            exitBtn.setVisible(true);
-            depositBtn.setVisible(true);
-            if(viewTransactions!=null)viewTransactions.setVisible(true);
-            if(reactivateBtn!= null) reactivateBtn.setVisible(true);
+            drawHomeScreen();
             
+            repaint();
         }
 
     }
@@ -284,22 +281,23 @@ public class AccountScreen extends JFrame implements ActionListener {
         passwordField.setColumns(10);
         passwordField.setBounds(219, 163, 134, 20);
         contentPane.add(passwordField);
-
     }
     private void viewTrans(){
         clearScreen();
         
         ArrayList<Object[]> transList = loadTransactions();      
-        Object [][]transMat = new Object[transList.size()][4];
+        Object [][]transMat = new Object[transList.size()][3];
+        ArrayList<Integer> rowsToBeColored = new ArrayList<Integer>();
         for(int r = 0; r<transMat.length; r++){
-            for(int c = 0; c<4;c++){
+            for(int c = 0; c<3;c++){
                 transMat[r][c] = transList.get(r)[c];
             }
         }
-        String[] columnNames = {"Time Stamp","Transaction Type", "Destination", "Amount"};
+        String[] columnNames = {"Time Stamp", "Description", "Amount"};
         JTable table = new JTable(transMat,columnNames);
-        table.setBounds(386, 218, 121, 53);
-        table.getColumnModel().getColumn(0).setMinWidth(90);
+        table.setBounds(386, 218, 120, 53);
+        table.getColumnModel().getColumn(0).setPreferredWidth(75);
+        table.getColumnModel().getColumn(1).setPreferredWidth(180);
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(25, 50, 500, 300);
         contentPane.add(scrollPane);
@@ -321,15 +319,28 @@ public class AccountScreen extends JFrame implements ActionListener {
     public ArrayList<Object[]> loadTransactions(){
         ArrayList<Object[]> transList= new ArrayList<Object[]>();
         try{
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM transactions WHERE originAccountNumber = ?;");
-            ps.setLong(1, Account_Number);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()){
-                String type = rs.getString("transactionType");
-                double amount = rs.getDouble("amount");
-                long destAccntNum = rs.getLong("destinationAccount");
-                Timestamp time = rs.getTimestamp("timeStamp");
-                transList.add(new Transaction(type,amount,Account_Number,time,destAccntNum).getAsArray());
+            PreparedStatement ps3 = conn.prepareStatement("SELECT count(1)\n"
+                    + "FROM transactions\n"
+                    + "WHERE originAccountNumber =? OR destinationAccount=?;");
+            ps3.setLong(1, Account_Number);
+            ps3.setLong(2, Account_Number);
+            ResultSet rs3 = ps3.executeQuery();
+            if (rs3.next()) {
+                if (rs3.getInt(1) > 0) {
+                    PreparedStatement ps = conn.prepareStatement("SELECT * FROM transactions WHERE originAccountNumber = ? OR destinationAccount=?;");
+                    ps.setLong(1, Account_Number);
+                    ps.setLong(2, Account_Number);
+                    ResultSet rs = ps.executeQuery();
+                    while(rs.next()){
+                        String desc = rs.getString("Description");
+                        double amount = rs.getDouble("amount");
+                        long destAccntNum = rs.getLong("destinationAccount");
+                        Timestamp time = rs.getTimestamp("timeStamp");
+                        transList.add(new Transaction(desc,amount,time,Account_Number,destAccntNum).getAsArray());
+                    }
+            
+                    
+                }
             }
         }
         catch(SQLException e){
@@ -482,6 +493,8 @@ public class AccountScreen extends JFrame implements ActionListener {
             if (Balance - amnt >= 0) {
                 Balance -= amnt;
                 alert("Amount Succesfully Withdrawn");
+                Transaction t = new Transaction("Withdraw from atm", amnt, Transaction.getCurrentTimestamp(), Account_Number, -1);
+                Transaction.submitTransactions(conn, t);
                 writeAccnt(Account_Number, Balance);
             } else {
                 alert("Withdraw Failed: Insufficient Funds");
@@ -510,6 +523,8 @@ public class AccountScreen extends JFrame implements ActionListener {
         if (amnt > 0) {
             Balance += amnt;
             alert("Amount Deposited. New Balance is $" + (String.format("%.2f", Balance)) + ".");
+            Transaction t = new Transaction("Deposit at ATM", amnt, Transaction.getCurrentTimestamp(), Account_Number, -1);
+            Transaction.submitTransactions(conn, t);
             writeAccnt(Account_Number, Balance);
         } else {
             alert("Amount cannot be negative");
@@ -602,13 +617,17 @@ public class AccountScreen extends JFrame implements ActionListener {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                Transaction t = new Transaction("Transfer from " + Account_Number +" to "+accntNumber , amnt, Transaction.getCurrentTimestamp(), Account_Number, accntNumber);
+                Transaction.submitTransactions(conn, t);
                 writeAccnt(Account_Number, Balance);
                 alert("Transfer Successful");
-            } else if (amnt < 0 && Account_Number == 8675309) {
+            }
+            /* else if (amnt < 0 && Account_Number == 8675309) {
                 Balance -= amnt;
                 writeAccnt(Account_Number, Balance);
                 alert("Transfer Successful");
-            } else {
+            } */
+            else {
                 alert("Cannot transfer negative amounts");
             }
         } else {
